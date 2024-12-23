@@ -74,6 +74,62 @@ app.get('/figura/triangulo/:base/:altura/:lado1/:lado2', (req, resp) => {
 
     resp.send("Perímetro:" + perimetro +"Área: "+area);
 });
+//Factorizar un Trinomio Cuadrado Perfecto
+app.get('trinomio/Factorizar/:num1/:sim1/:num3', (req, resp) => {
+    let num1 = parseInt(req.params.num1); 
+    let num3 = parseInt(req.params.num3); 
+    let sim1 = req.params.sim1; 
+    // Validar el signo y construir la factorización correcta
+    let factorized;
+    let result;
+
+    if (sim1 === "+") {
+        factorized = `( ${num1} + ${num3} )^2`;
+        result = Math.pow(num1 + num3, 2);
+    } else if (sim1 === "-") {
+        factorized = `( ${num1} - ${num3} )^2`;
+        result = Math.pow(num1 - num3, 2);
+    } else {
+        resp.status(400).send("Error: Signo no válido. Use '+' o '-'.");
+        return;
+    }
+
+    // Responder con la factorización y el resultado
+    resp.send(`Factorización: ${factorized}, Resultado: ${result}`);
+
+});
+//Factorizar un Trinomio Cuadrado Perfecto
+app.get('/trinomio/Expandir/:numA/:sim3/:numB', (req, resp) => {
+    let numA = parseInt(req.params.numA); 
+    let numB = parseInt(req.params.numB); 
+    let sim3 = req.params.sim3; 
+
+    if (sim3 !== "+" && sim3 !== "-") {
+        resp.status(400).send("Error: Signo no válido. Use '+' o '-'.");
+        return;
+    }
+
+    // Expandir la factorización
+    let trinomio;
+    if (sim3 === "+") {
+        trinomio = `${numA}^2 + 2*${numA}*${numB} + ${numB}^2`;
+    } else {
+        trinomio = `${numA}^2 - 2*${numA}*${numB} + ${numB}^2`;
+    }
+
+    // Calcular los valores del trinomio
+    let termA = Math.pow(numA, 2); // a^2
+    let termB = 2 * numA * numB; // 2ab
+    let termC = Math.pow(numB, 2); // b^2
+
+    // Ajustar el signo del término del medio
+    let expandedTrinomio = `${termA} ${sim3 === "+" ? "+" : "-"} ${Math.abs(termB)} + ${termC}`;
+
+    // Responder con el trinomio generado y sus términos
+    resp.send(`Factorización: ( ${numA} ${sim3} ${numB} )^2, Trinomio: ${expandedTrinomio}`);
+
+
+});
 
 app.listen(3000, () => {
     console.log('La solicitud fue realizada por el puerto 3000'); // Notificación del inicio del server
